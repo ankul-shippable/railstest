@@ -5,7 +5,7 @@ language: ruby
 #     - SHIPPABLE_BUNDLER_VERSION=2.0.0
 
 rvm:
-  - 2.5
+  - 2.6
 
 build:
   ci:
