@@ -15,3 +15,5 @@ build:
     - rake test --trace
     - sudo apt-get install tree
     - tree
+    - cat test/reports/TEST-MyprojectMoreTest.xml
+    - cat test/reports/TEST-MyprojectTest.xml
