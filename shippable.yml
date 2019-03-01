@@ -15,7 +15,7 @@ build:
     #- rake test TEST=test/myproject_more_test.rb
     - test_files="$(find test/ -name \*_test.rb)"
     - printf '%s\n' "${test_files[@]}"
-    - for test_file in test_files; do echo $test_file; rake test TEST=$test_file; done
+    - for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
