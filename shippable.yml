@@ -13,3 +13,5 @@ build:
     - gem install bundler
     - bundle install 
     - rake test --trace
+    - sudo apt-get install tree
+    - tree
