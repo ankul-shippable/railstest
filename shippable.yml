@@ -12,7 +12,8 @@ build:
     - ruby -v
     - gem install bundler
     - bundle install
-    - rake test TEST=test/myproject_more_test.rb
+    #- rake test TEST=test/myproject_more_test.rb
+    - for i in "$(find test/ -name \*_test.rb)"; do rake test TEST=$i; done
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
