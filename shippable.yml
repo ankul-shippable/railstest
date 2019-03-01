@@ -10,5 +10,6 @@ rvm:
 build:
   ci:
     - ruby -v
+    - gem install bundler
     - bundle install
     - rake test
