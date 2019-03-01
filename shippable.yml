@@ -12,7 +12,7 @@ build:
     - ruby -v
     - gem install bundler
     - bundle install 
-    - rake test --trace
+    - rake test test/myproject_more_test.rb
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
