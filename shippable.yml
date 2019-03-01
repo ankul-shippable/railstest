@@ -10,5 +10,5 @@ rvm:
 build:
   ci:
     - ruby -v
-    - gem install myproject
+    - ./bin/setup
     - rake test --trace
