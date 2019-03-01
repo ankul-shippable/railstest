@@ -11,8 +11,8 @@ build:
   ci:
     - ruby -v
     - gem install bundler
-    - bundle install 
-    - rake test test/myproject_more_test.rb
+    - bundle install
+    - rake test TEST=test/myproject_more_test.rb
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
