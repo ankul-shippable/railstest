@@ -10,9 +10,5 @@ rvm:
 build:
   ci:
     - ruby -v
-    - gem install bundler
-    - gem install rake
-    - gem install minitest
-    - gem install minitest-reporters
-    - bundle install
+    - gem install myproject
     - rake test --trace
