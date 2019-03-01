@@ -15,4 +15,4 @@ build:
     - gem install minitest
     - gem install minitest-reporters
     - bundle install
-    - rake test
+    - rake test --trace
