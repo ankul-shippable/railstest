@@ -1,8 +1,8 @@
 language: ruby
 
-# env:
-#   global:
-#     - SHIPPABLE_BUNDLER_VERSION=2.0.0
+ env:
+   matrix:
+     - JOB=1
 
 rvm:
   - 2.6
@@ -14,9 +14,10 @@ build:
     - bundle install
     #- rake test TEST=test/myproject_more_test.rb
     - test_files="$(find test/ -name \*_test.rb)"
-    - printf '%s\n' "${test_files[@]}"
+    - test_files_sorted=$test_files | sort -n
+    - printf '%s\n' "${test_files_sorted[@]}"
     #- for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
-    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
+    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files_sorted[@]}
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
