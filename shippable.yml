@@ -1,8 +1,8 @@
 language: ruby
 
- env:
-   matrix:
-     - JOB=1
+env:
+  matrix:
+    - JOB=1
 
 rvm:
   - 2.6
