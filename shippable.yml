@@ -14,10 +14,10 @@ build:
     - bundle install
     #- rake test TEST=test/myproject_more_test.rb
     - test_files="$(find test/ -name \*_test.rb)"
-    - test_files_sorted=$test_files | sort -n
-    - printf '%s\n' "${test_files_sorted[@]}"
+    #- test_files_sorted=$test_files | sort -n
+    - printf '%s\n' "${test_files[@]}"
     #- for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
-    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files_sorted[@]}
+    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
     - sudo apt-get install tree
     - tree
     - cat test/reports/TEST-MyprojectMoreTest.xml
