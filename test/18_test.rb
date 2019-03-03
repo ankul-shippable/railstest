@@ -1,6 +1,6 @@
 require "test_helper"
 
-class 18_test < Minitest::Test
+class A18Test < Minitest::Test
 
   def test_it_waits_for_18_seconds_a
     sleep 18

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class 10_test < Minitest::Test
+class A10Test < Minitest::Test
 
   def test_it_waits_for_10_seconds
     sleep 10
