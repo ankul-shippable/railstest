@@ -8,10 +8,9 @@ rvm:
   - 2.6
 
 build:
-  pre_ci:
-    - sudo apt-get install tree
   ci:
     - ruby -v
+    - sudo apt-get install tree
     - gem install bundler
     - bundle install
     #- rake test TEST=test/myproject_more_test.rb
