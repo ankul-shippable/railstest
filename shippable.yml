@@ -8,6 +8,8 @@ rvm:
   - 2.6
 
 build:
+  pre_ci:
+    - sudo apt-get install tree
   ci:
     - ruby -v
     - gem install bundler
@@ -18,7 +20,4 @@ build:
     - printf '%s\n' "${test_files[@]}"
     #- for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
-    - sudo apt-get install tree
-    - tree
-    - cat test/reports/TEST-MyprojectMoreTest.xml
-    - cat test/reports/TEST-MyprojectTest.xml
+    - tree test/
