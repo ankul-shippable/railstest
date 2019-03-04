@@ -3,7 +3,7 @@ language: ruby
 env:
   global:
     - TESTPATH=test/
-    - TESTREPORTSPATH=tests/reports/
+    - TESTREPORTSPATH=test/reports/
     - PARALLELIZATION=4
   matrix:
     - NODENUMBER=0
@@ -18,11 +18,10 @@ build:
   ci:
     - ruby -v
     - sudo apt-get install tree
-    - tree $TESTREPORTSPATH
     - pip install yq
     - gem install bundler
     - bundle install
-    - tree /tmp/cache
+    - tree /tmp/cache/$TESTREPORTSPATH
     - |
         if [ -d /tmp/cache/$TESTREPORTSPATH ];
         then
@@ -30,6 +29,7 @@ build:
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
+    - tree $TESTREPORTSPATH
     #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
     - |
         rm -rf /tmp/currentTests.txt
@@ -68,12 +68,13 @@ build:
     - |
         if [ -d \"$TESTREPORTSPATH\" ];
         then
-          cp -r $TESTREPORTSPATH/. /tmp/reports\n  rm -rf $TESTREPORTSPATH
+          cp -r $TESTREPORTSPATH/. /tmp/reports
+          rm -rf $TESTREPORTSPATH
         fi
     - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
     - tree test/reports
-    - cp -ru test/reports/. $TESTREPORTSPATH
+    - cp -ru tmp/reports/. $TESTREPORTSPATH
     - mkdir -p /tmp/cache/$TESTREPORTSPATH
     - cp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
 
