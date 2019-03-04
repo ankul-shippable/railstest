@@ -22,7 +22,12 @@ build:
     - pip install yq
     - gem install bundler
     - bundle install
-    - if [ -d /tmp/cache/$TESTREPORTSPATH ]; then\n  mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH\n  cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH\nfi\n
+    - tree /tmp
+    - |
+        if [ -d /tmp/cache/$TESTREPORTSPATH ]; then
+          mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
+          cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
+        fi
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
     - |
