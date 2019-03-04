@@ -78,6 +78,7 @@ build:
     - cp -ru /tmp/reports/. $TESTREPORTSPATH
     - mkdir -p /tmp/cache/$TESTREPORTSPATH
     - cp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
+    - tree /tmp/cache/$TESTREPORTSPATH
 
   cache: true
   cache_dir_list:
