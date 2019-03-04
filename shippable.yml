@@ -3,6 +3,9 @@ language: ruby
 env:
   matrix:
     - JOB=1
+    - JOB=2
+    - JOB=3
+    - JOB=4
 
 rvm:
   - 2.6
@@ -13,10 +16,7 @@ build:
     - sudo apt-get install tree
     - gem install bundler
     - bundle install
-    #- rake test TEST=test/myproject_more_test.rb
-    - test_files="$(find test/ -name \*_test.rb)"
-    #- test_files_sorted=$test_files | sort -n
-    - printf '%s\n' "${test_files[@]}"
     #- for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
+    - ./run_test.sh
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
     - tree test/
