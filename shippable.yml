@@ -22,7 +22,40 @@ build:
     - find $TESTSCACHEDPATH -name \*.xml | true
     - gem install bundler
     - bundle install
-    - rm -rf /tmp/currentTests.txt\nfor i in \"$(find $TESTPATH -name \\*_test.rb)\"; do echo -e \"$i\\n\" >> /tmp/currentTests.txt; done\nrm -rf /tmp/pastTestTimes.txt\nfor i in \"$(find $TESTSCACHEDPATH -name \\*.xml)\"; do\n  echo $(xq .testsuites.testsuite $i | jq -cr '.[\"@filepath\"],\" \", .[\"@time\"]') >> /tmp/pastTestTimes.txt\ndone\nsort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt\nawk -F\" \" '{print $1}' /tmp/sorted_pastTestTimes.txt >  /tmp/sorted_pastTests.txt\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'PastTests=($(cat /tmp/sorted_pastTests.txt))'\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'CurrentTests=($(cat /tmp/currentTests.txt))'\nAllTests=()\nCurrentRunTests=()\nfor i in \"${PastTests[@]}\"; do\n  skip=\n  for j in \"${CurrentTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] && AllTests+=($i)\ndone\nfor i in \"${CurrentTests[@]}\"; do\n  skip=\n  for j in \"${PastTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] || AllTests+=($i)\ndone\ntLen=${#AllTests[@]}\nfor (( i=${NODENUMBER}; i<${tLen}; i=i+${PARALLELIZATION} ));\ndo\n  CurrentRunTests+=(${AllTests[$i]})\ndone\necho \"Number of tests in this pass is ${#CurrentRunTests[@]}\"\n",
+    #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
+    - |
+        rm -rf /tmp/currentTests.txt
+        for i in "$(find $TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
+        rm -rf /tmp/pastTestTimes.txt
+        for i in "$(find $TESTSCACHEDPATH -name \*.xml)"; do
+          echo $(xq .testsuites.testsuite $i | jq -cr '.["@filepath"]," ", .["@time"]') >> /tmp/pastTestTimes.txt
+        done
+        sort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt
+        awk -F" " '{print $1}' /tmp/sorted_pastTestTimes.txt > /tmp/sorted_pastTests.txt
+        IFS=$'\r\n' GLOBIGNORE='*' command eval  'PastTests=($(cat /tmp/sorted_pastTests.txt))'
+        IFS=$'\r\n' GLOBIGNORE='*' command eval  'CurrentTests=($(cat /tmp/currentTests.txt))'
+        AllTests=()
+        CurrentRunTests=()
+        for i in "${PastTests[@]}"; do
+          skip=
+          for j in "${CurrentTests[@]}"; do
+            [[ $i == $j ]] && { skip=1; break; }
+          done
+          [[ -n $skip ]] && AllTests+=($i)
+        done
+        for i in "${CurrentTests[@]}"; do
+          skip=
+          for j in "${PastTests[@]}"; do
+            [[ $i == $j ]] && { skip=1; break; }
+          done
+          [[ -n $skip ]] || AllTests+=($i)
+        done
+        tLen=${#AllTests[@]}
+        for (( i=${NODENUMBER}; i<${tLen}; i=i+${PARALLELIZATION} ));
+        do
+          CurrentRunTests+=(${AllTests[$i]})
+        done
+        echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
     - printf '%s\n' "${CurrentRunTests[@]}"
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
     - tree test/
