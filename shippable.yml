@@ -47,14 +47,14 @@ build:
         for i in "${PastTests[@]}"; do
           skip=
           for j in "${CurrentTests[@]}"; do
-            [[ $i == $j ]] && { skip=1; break; }
+            [[ $i == *$j ]] && { skip=1; break; }
           done
           [[ -n $skip ]] && AllTests+=($i)
         done
         for i in "${CurrentTests[@]}"; do
           skip=
           for j in "${PastTests[@]}"; do
-            [[ $i == $j ]] && { skip=1; break; }
+            [[ $j == *$i ]] && { skip=1; break; }
           done
           [[ -n $skip ]] || AllTests+=($i)
         done
