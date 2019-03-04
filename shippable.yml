@@ -4,7 +4,6 @@ env:
   global:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
-    - TESTSCACHEDPATH=tmp/cache/
     - PARALLELIZATION=4
   matrix:
     - NODENUMBER=0
@@ -19,17 +18,18 @@ build:
   ci:
     - ruby -v
     - sudo apt-get install tree
+    - tree $TESTREPORTSPATH
     - pip install yq
-    - find $TESTSCACHEDPATH -name \*.xml | true
     - gem install bundler
     - bundle install
-    - sudo mkdir -p /tmp/cache/$TESTREPORTSPATH
+    - if [ -d /tmp/cache/$TESTREPORTSPATH ]; then\n  mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH\n  cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH\nfi\n
+    - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
     - |
         rm -rf /tmp/currentTests.txt
         for i in "$(find $TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
         rm -rf /tmp/pastTestTimes.txt
-        for i in "$(find $TESTSCACHEDPATH -name \*.xml)"; do
+        for i in "$(find $TESTREPORTSPATH -name \*.xml)"; do
           echo $(xq .testsuites.testsuite $i | jq -cr '.["@filepath"]," ", .["@time"]') >> /tmp/pastTestTimes.txt
         done
         sort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt
@@ -59,10 +59,12 @@ build:
         done
         echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
     - printf '%s\n' "${CurrentRunTests[@]}"
+    - if [ -d \"$TESTREPORTSPATH\" ]; then\n  cp -r $TESTREPORTSPATH/. /tmp/reports\n  rm -rf $TESTREPORTSPATH\nfi\n
+    - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
-    - tree test/
-    - sudo mkdir -p /tmp/cache/$TESTREPORTSPATH
-    - cp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
+    - tree test/reports
+    - cp -ru /tmp/reports/. $TESTREPORTSPATH
+    - mkdir -p /tmp/cache/$TESTREPORTSPATH\ncp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/\n
 
   cache: true
   cache_dir_list:
