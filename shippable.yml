@@ -64,6 +64,8 @@ build:
           CurrentRunTests+=(${AllTests[$i]})
         done
         echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
+    - printf '%s\n' "${AllTests[@]}"
+    - printf '%s\n' "${PastTests[@]}"
     - printf '%s\n' "${CurrentRunTests[@]}"
     - |
         if [ -d \"$TESTREPORTSPATH\" ];
