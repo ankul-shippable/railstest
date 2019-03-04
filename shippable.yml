@@ -19,7 +19,7 @@ build:
   ci:
     - ruby -v
     - sudo apt-get install tree
-    - if [ -d \"$TESTSCACHEDPATH\" ]; then\n find $TESTSCACHEDPATH -name \*.xml\nfi\n
+    - if [ -d \"$TESTSCACHEDPATH\" ]; then find $TESTSCACHEDPATH -name \*.xml fi
     - gem install bundler
     - bundle install
     - rm -rf /tmp/currentTests.txt\nfor i in \"$(find $TESTPATH -name \\*_test.rb)\"; do echo -e \"$i\\n\" >> /tmp/currentTests.txt; done\nrm -rf /tmp/pastTestTimes.txt\nfor i in \"$(find $TESTSCACHEDPATH -name \\*.xml)\"; do\n  echo $(xq .testsuites.testsuite $i | jq -cr '.[\"@filepath\"],\" \", .[\"@time\"]') >> /tmp/pastTestTimes.txt\ndone\nsort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt\nawk -F\" \" '{print $1}' /tmp/sorted_pastTestTimes.txt >  /tmp/sorted_pastTests.txt\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'PastTests=($(cat /tmp/sorted_pastTests.txt))'\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'CurrentTests=($(cat /tmp/currentTests.txt))'\nAllTests=()\nCurrentRunTests=()\nfor i in \"${PastTests[@]}\"; do\n  skip=\n  for j in \"${CurrentTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] && AllTests+=($i)\ndone\nfor i in \"${CurrentTests[@]}\"; do\n  skip=\n  for j in \"${PastTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] || AllTests+=($i)\ndone\ntLen=${#AllTests[@]}\nfor (( i=${NODENUMBER}; i<${tLen}; i=i+${PARALLELIZATION} ));\ndo\n  CurrentRunTests+=(${AllTests[$i]})\ndone\necho \"Number of tests in this pass is ${#CurrentRunTests[@]}\"\n",
