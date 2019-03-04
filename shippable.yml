@@ -79,7 +79,7 @@ build:
     - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
     - tree test/reports
-    - cp -ru tmp/reports/. $TESTREPORTSPATH
+    - cp -ru /tmp/reports/. $TESTREPORTSPATH
     - mkdir -p /tmp/cache/$TESTREPORTSPATH
     - cp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
 
