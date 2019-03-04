@@ -30,6 +30,8 @@ build:
         fi
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - tree $TESTREPORTSPATH
+    - sudo tree /tmp
+    - sudo mkdir /tmp/reports
     #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
     - |
         rm -rf /tmp/currentTests.txt
@@ -68,6 +70,7 @@ build:
     - |
         if [ -d \"$TESTREPORTSPATH\" ];
         then
+          sudo mkdir /tmp/reports
           cp -r $TESTREPORTSPATH/. /tmp/reports
           tree /tmp
           rm -rf $TESTREPORTSPATH
