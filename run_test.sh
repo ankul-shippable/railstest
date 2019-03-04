@@ -1,12 +1,5 @@
 #!/bin/bash
-declare -a tests_1=("test/01_test.rb"
-                    "test/02_test.rb"
-                    "test/03_test.rb"
-                    "test/04_test.rb"
-                    "test/05_test.rb"
-                    "test/06_test.rb"
-                    "test/07_test.rb"
-                    )
+tests_1=("test/01_test.rb" "test/02_test.rb" "test/03_test.rb" "test/04_test.rb" "test/05_test.rb" "test/06_test.rb" "test/07_test.rb")
 declare -a tests_2=("test/08_test.rb"
                     "test/09_test.rb"
                     "test/10_test.rb"

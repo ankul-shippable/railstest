@@ -3,12 +3,12 @@ require "test_helper"
 class A20Test < Minitest::Test
 
   def test_it_waits_for_20_seconds_a
-    sleep 20
+    sleep 60
     assert true
   end
 
   def test_it_waits_for_20_seconds_b
-    sleep 20
+    sleep 60
     assert true
   end
 end
