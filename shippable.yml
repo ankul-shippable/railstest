@@ -24,7 +24,8 @@ build:
     - bundle install
     - tree /tmp
     - |
-        if [ -d /tmp/cache/$TESTREPORTSPATH ]; then
+        if [ -d /tmp/cache/$TESTREPORTSPATH ];
+        then
           mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
@@ -64,7 +65,11 @@ build:
         done
         echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
     - printf '%s\n' "${CurrentRunTests[@]}"
-    - if [ -d \"$TESTREPORTSPATH\" ]; then\n  cp -r $TESTREPORTSPATH/. /tmp/reports\n  rm -rf $TESTREPORTSPATH\nfi\n
+    - |
+        if [ -d \"$TESTREPORTSPATH\" ];
+        then
+          cp -r $TESTREPORTSPATH/. /tmp/reports\n  rm -rf $TESTREPORTSPATH
+        fi
     - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
     - tree test/reports
