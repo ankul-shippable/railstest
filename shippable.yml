@@ -22,7 +22,7 @@ build:
     - pip install yq
     - gem install bundler
     - bundle install
-    - tree /tmp
+    - tree /tmp/cache
     - |
         if [ -d /tmp/cache/$TESTREPORTSPATH ];
         then
