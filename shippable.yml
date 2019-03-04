@@ -69,7 +69,9 @@ build:
         if [ -d \"$TESTREPORTSPATH\" ];
         then
           cp -r $TESTREPORTSPATH/. /tmp/reports
+          tree /tmp
           rm -rf $TESTREPORTSPATH
+          tree /tmp
         fi
     - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
