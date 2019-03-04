@@ -1,11 +1,16 @@
 language: ruby
 
 env:
+  global:
+    - TESTPATH=test/
+    - TESTREPORTSPATH=test/reports/
+    - TESTSCACHEDPATH=tmp/cache/
+    - PARALLELIZATION=4
   matrix:
-    - JOB=1
-    - JOB=2
-    - JOB=3
-    - JOB=4
+    - NODENUMBER=0
+    - NODENUMBER=1
+    - NODENUMBER=2
+    - NODENUMBER=3
 
 rvm:
   - 2.6
@@ -14,14 +19,15 @@ build:
   ci:
     - ruby -v
     - sudo apt-get install tree
+    - find $TESTREPORTSPATH -name \*.xml
     - gem install bundler
     - bundle install
-    #- for test_file in $test_files; do echo $test_file; rake test TEST=$test_file; done
-    - tests_1=("test/01_test.rb" "test/02_test.rb" "test/03_test.rb" "test/04_test.rb" "test/05_test.rb" "test/06_test.rb" "test/07_test.rb")
-    - tests_2=("test/08_test.rb" "test/09_test.rb" "test/10_test.rb" "test/11_test.rb" "test/12_test.rb" "test/13_test.rb" "test/14_test.rb")
-    - tests_3=("test/15_test.rb" "test/16_test.rb" "test/17_test.rb" "test/18_test.rb" "test/19_test.rb" "test/20_test.rb" "test/21_test.rb")
-    - tests_4=("test/22_test.rb" "test/23_test.rb" "test/24_test.rb" "test/25_test.rb" "test/26_test.rb" "test/27_test.rb" "test/28_test.rb" "test/29_test.rb" "test/30_test.rb")
-    - tests_to_run=tests_$SHIPPABLE_JOB_NUMBER[@]
-    - tests_final="$(echo ${!tests_to_run})"
-    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${tests_final[@]}
+    - rm -rf /tmp/currentTests.txt\nfor i in \"$(find $TESTPATH -name \\*_test.rb)\"; do echo -e \"$i\\n\" >> /tmp/currentTests.txt; done\nrm -rf /tmp/pastTestTimes.txt\nfor i in \"$(find $TESTSCACHEDPATH -name \\*.xml)\"; do\n  echo $(xq .testsuites.testsuite $i | jq -cr '.[\"@filepath\"],\" \", .[\"@time\"]') >> /tmp/pastTestTimes.txt\ndone\nsort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt\nawk -F\" \" '{print $1}' /tmp/sorted_pastTestTimes.txt >  /tmp/sorted_pastTests.txt\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'PastTests=($(cat /tmp/sorted_pastTests.txt))'\nIFS=$'\\r\\n' GLOBIGNORE='*' command eval  'CurrentTests=($(cat /tmp/currentTests.txt))'\nAllTests=()\nCurrentRunTests=()\nfor i in \"${PastTests[@]}\"; do\n  skip=\n  for j in \"${CurrentTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] && AllTests+=($i)\ndone\nfor i in \"${CurrentTests[@]}\"; do\n  skip=\n  for j in \"${PastTests[@]}\"; do\n    [[ $i == $j ]] && { skip=1; break; }\n  done\n  [[ -n $skip ]] || AllTests+=($i)\ndone\ntLen=${#AllTests[@]}\nfor (( i=${NODENUMBER}; i<${tLen}; i=i+${PARALLELIZATION} ));\ndo\n  CurrentRunTests+=(${AllTests[$i]})\ndone\necho \"Number of tests in this pass is ${#CurrentRunTests[@]}\"\n",
+    - printf '%s\n' "${CurrentRunTests[@]}"
+    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
     - tree test/
+    - mkdir -p /tmp/cache/$TESTREPORTSPATH\ncp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/\n
+
+  cache: true
+  cache_dir_list:
+    - /tmp/cache
