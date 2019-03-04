@@ -64,6 +64,7 @@ build:
           CurrentRunTests+=(${AllTests[$i]})
         done
         echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
+    - sudo cat /tmp/pastTestTimes.txt
     - printf '%s\n' "${AllTests[@]}"
     - printf '%s\n' "${PastTests[@]}"
     - printf '%s\n' "${CurrentRunTests[@]}"
