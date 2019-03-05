@@ -35,7 +35,7 @@ build:
         rm -rf /tmp/currentTests.txt
         for i in "$(find $TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
         rm -rf /tmp/pastTestTimes.txt
-        for i in "$(find $TESTREPORTSPATH -name \*.xml)"; do
+        find $TESTREPORTSPATH -name \*.xml|while read i; do
           echo $(xq .testsuites.testsuite $i | jq -cr '.["@filepath"]," ", .["@time"]') >> /tmp/pastTestTimes.txt
         done
         sort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt
