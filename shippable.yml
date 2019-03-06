@@ -4,6 +4,7 @@ env:
   global:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
+    - SHIPPABLE_JOB_COUNT=4
   matrix:
     - JOB=0
     - JOB=1
