@@ -4,12 +4,11 @@ env:
   global:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
-    - PARALLELIZATION=4
   matrix:
-    - NODENUMBER=0
-    - NODENUMBER=1
-    - NODENUMBER=2
-    - NODENUMBER=3
+    - JOB=0
+    - JOB=1
+    - JOB=2
+    - JOB=3
 
 rvm:
   - 2.6
@@ -30,40 +29,9 @@ build:
         fi
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - sudo mkdir /tmp/reports
-    #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
-    - |
-        rm -rf /tmp/currentTests.txt
-        for i in "$(find $TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
-        rm -rf /tmp/pastTestTimes.txt
-        find $TESTREPORTSPATH -name \*.xml|while read i; do
-          echo $(xq .testsuites.testsuite $i | jq -cr '.["@filepath"]," ", .["@time"]') >> /tmp/pastTestTimes.txt
-        done
-        sort -k 2n /tmp/pastTestTimes.txt > /tmp/sorted_pastTestTimes.txt
-        awk -F" " '{print $1}' /tmp/sorted_pastTestTimes.txt > /tmp/sorted_pastTests.txt
-        IFS=$'\r\n' GLOBIGNORE='*' command eval  'PastTests=($(cat /tmp/sorted_pastTests.txt))'
-        IFS=$'\r\n' GLOBIGNORE='*' command eval  'CurrentTests=($(cat /tmp/currentTests.txt))'
-        AllTests=()
-        CurrentRunTests=()
-        for i in "${PastTests[@]}"; do
-          skip=
-          for j in "${CurrentTests[@]}"; do
-            [[ $i == *$j ]] && { skip=1; break; }
-          done
-          [[ -n $skip ]] && AllTests+=($i)
-        done
-        for i in "${CurrentTests[@]}"; do
-          skip=
-          for j in "${PastTests[@]}"; do
-            [[ $j == *$i ]] && { skip=1; break; }
-          done
-          [[ -n $skip ]] || AllTests+=($i)
-        done
-        tLen=${#AllTests[@]}
-        for (( i=${NODENUMBER}; i<${tLen}; i=i+${PARALLELIZATION} ));
-        do
-          CurrentRunTests+=(${AllTests[$i]})
-        done
-        echo "Number of tests in this pass is ${#CurrentRunTests[@]}"
+    - git clone https://github.com/ankul-shippable/node.git
+    - sudo node/blob/master/shipctl/x86_64/Ubuntu_16.04/install.sh
+    - shipctl split_tests $TESTPATH "\*_test.rb" $TESTREPORTSPATH
     - sudo cat /tmp/pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTests.txt || true
