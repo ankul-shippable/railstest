@@ -29,18 +29,13 @@ build:
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
     - sudo mkdir $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH || true
-    - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - sudo mkdir /tmp/reports
     - git clone https://github.com/ankul-shippable/node.git
     - sudo node/shipctl/x86_64/Ubuntu_16.04/install.sh
     - test_files=$(shipctl split_tests $TESTPATH \*_test.rb $TESTREPORTSPATH)
     - printf '%s\n' "${test_files[@]}"
-    - sudo cat /tmp/pastTestTimes.txt || true
-    - sudo cat /tmp/sorted_pastTestTimes.txt || true
-    - sudo cat /tmp/sorted_pastTests.txt || true
-    - printf '%s\n' "${AllTests[@]}"
-    - printf '%s\n' "${PastTests[@]}"
-    - printf '%s\n' "${CurrentRunTests[@]}"
+    - printf '%s\n' "${all_tests[@]}"
+    - printf '%s\n' "${past_tests[@]}"
     - |
         if [ -d \"$TESTREPORTSPATH\" ];
         then
