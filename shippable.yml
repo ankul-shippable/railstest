@@ -27,7 +27,7 @@ build:
           mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
-    - sudo mkdir $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
+    - sudo mkdir $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH || true
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - sudo mkdir /tmp/reports
     - git clone https://github.com/ankul-shippable/node.git
