@@ -33,7 +33,6 @@ build:
     - test_files=$(shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH)
     # run tests
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
-    - tree $TESTREPORTSPATH
     # cache test reports
     - cp -ru $TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
      
