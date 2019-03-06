@@ -33,7 +33,7 @@ build:
     #this whole section will become a shipctl command. for now adding it to punchh-server until shippable ships this
     - |
         rm -rf /tmp/currentTests.txt
-        for i in "$(find $TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
+        for i in "$(find $SHIPPABLE_BUILD_DIR/$TESTPATH -name \*_test.rb)"; do echo -e "$i\n" >> /tmp/currentTests.txt; done
         rm -rf /tmp/pastTestTimes.txt
         find $TESTREPORTSPATH -name \*.xml|while read i; do
           echo $(xq .testsuites.testsuite $i | jq -cr '.["@filepath"]," ", .["@time"]') >> /tmp/pastTestTimes.txt
