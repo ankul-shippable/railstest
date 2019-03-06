@@ -32,7 +32,7 @@ build:
     - sudo mkdir /tmp/reports
     - git clone https://github.com/ankul-shippable/node.git
     - sudo node/shipctl/x86_64/Ubuntu_16.04/install.sh
-    - shipctl split_tests "$TESTPATH" "\*_test.rb" "$TESTREPORTSPATH"
+    - shipctl split_tests "$SHIPPABLE_BUILD_DIR/$TESTPATH" "\*_test.rb" "$TESTREPORTSPATH"
     - sudo cat /tmp/pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTests.txt || true
