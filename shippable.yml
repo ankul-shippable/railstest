@@ -21,35 +21,28 @@ build:
     - pip install yq
     - gem install bundler
     - bundle install
-    - tree /tmp/cache/$TESTREPORTSPATH
-    - |
-        if [ -d /tmp/cache/$TESTREPORTSPATH ];
-        then
-          mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
-          cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
-        fi
-    - sudo mkdir $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH || true
-    - sudo mkdir /tmp/reports
     - git clone https://github.com/ankul-shippable/node.git
     - sudo node/shipctl/x86_64/Ubuntu_16.04/install.sh
-    - test_files=$(shipctl split_tests $TESTPATH \*_test.rb $TESTREPORTSPATH)
+    - |
+        if [ ! -d \"/tmp/cache/$TESTREPORTSPATH\" ];
+        then
+          mkdir -p /tmp/cache/$TESTREPORTSPATH
+        fi
+    - tree /tmp/cache/$TESTREPORTSPATH
+    # find test files to run in this job using shipctl split_tests
+    - test_files=$(shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH)
+    # run tests
+    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
+    - tree $TESTREPORTSPATH
+    # cache test reports
+    - cp -ru $TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
+     
+    # print data to verify split_tests command
+    - tree $TESTREPORTSPATH
+    - tree /tmp/cache/$TESTREPORTSPATH
     - printf '%s\n' "${test_files[@]}"
     - printf '%s\n' "${all_tests[@]}"
     - printf '%s\n' "${past_tests[@]}"
-    - |
-        if [ -d \"$TESTREPORTSPATH\" ];
-        then
-          sudo mkdir /tmp/reports
-          cp -r $TESTREPORTSPATH/. /tmp/reports
-          rm -rf $TESTREPORTSPATH
-        fi
-    - mkdir -p $TESTREPORTSPATH
-    - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${CurrentRunTests[@]}
-    - tree test/reports
-    - cp -ru /tmp/reports/. $TESTREPORTSPATH
-    - mkdir -p /tmp/cache/$TESTREPORTSPATH
-    - cp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
-    - tree /tmp/cache/$TESTREPORTSPATH
 
   cache: true
   cache_dir_list:
