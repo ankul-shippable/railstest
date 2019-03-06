@@ -27,11 +27,12 @@ build:
           mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
+    - sudo mkdir $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - tree $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - sudo mkdir /tmp/reports
     - git clone https://github.com/ankul-shippable/node.git
     - sudo node/shipctl/x86_64/Ubuntu_16.04/install.sh
-    - shipctl split_tests $TESTPATH "\*_test.rb" $TESTREPORTSPATH
+    - shipctl split_tests "$TESTPATH" "\*_test.rb" "$TESTREPORTSPATH"
     - sudo cat /tmp/pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTestTimes.txt || true
     - sudo cat /tmp/sorted_pastTests.txt || true
