@@ -4,12 +4,11 @@ env:
   global:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
-    - SHIPPABLE_JOB_COUNT=4
   matrix:
-    - JOB=0
-    - JOB=1
-    - JOB=2
-    - JOB=3
+    - MATRIX_JOB=0
+    - MATRIX_JOB=1
+    - MATRIX_JOB=2
+    - MATRIX_JOB=3
 
 rvm:
   - 2.6
