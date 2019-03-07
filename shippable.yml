@@ -36,7 +36,7 @@ build:
     - test_files=$(shipctl split_tests $TESTPATH \*_test.rb $TESTREPORTSPATH)
     - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
-    - cp -ru /tmp/reports/. $TESTREPORTSPATH"
+    - cp -ru /tmp/reports/. $TESTREPORTSPATH
     - mkdir -p /tmp/cache/$TESTREPORTSPATH\ncp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/\n
 
     # print data to verify split_tests command
