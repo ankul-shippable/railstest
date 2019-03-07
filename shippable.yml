@@ -26,7 +26,8 @@ build:
         fi
     - tree /tmp/cache/$TESTREPORTSPATH
     # find test files to run in this job using shipctl split_tests
-    - test_files=$(shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH)
+    #- test_files=$(shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH)
+    - shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH
     # run tests
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
     # cache test reports
