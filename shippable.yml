@@ -1,5 +1,8 @@
 language: ruby
 
+rvm:
+  - 2.6
+
 env:
   global:
     - TESTPATH=test/
@@ -9,9 +12,6 @@ env:
     - MATRIX_JOB=1
     - MATRIX_JOB=2
     - MATRIX_JOB=3
-
-rvm:
-  - 2.6
 
 build:
   ci:
