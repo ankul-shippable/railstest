@@ -8,10 +8,10 @@ env:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
   matrix:
-    - MATRIX_JOB=0
     - MATRIX_JOB=1
     - MATRIX_JOB=2
     - MATRIX_JOB=3
+    - MATRIX_JOB=4
 
 build:
   ci:
