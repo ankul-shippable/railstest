@@ -8,30 +8,36 @@ env:
     - TESTPATH=test/
     - TESTREPORTSPATH=test/reports/
   matrix:
-    - MATRIX_JOB=0
     - MATRIX_JOB=1
     - MATRIX_JOB=2
     - MATRIX_JOB=3
+    - MATRIX_JOB=4
 
 build:
   ci:
-    - apt-get install tree
+    - sudo apt-get install tree
     - pip install yq
     - gem install bundler
     - bundle install
     - |
-        if [ ! -d \"/tmp/cache/$TESTREPORTSPATH\" ];
+        if [ -d /tmp/cache/$TESTREPORTSPATH ];
         then
-          mkdir -p /tmp/cache/$TESTREPORTSPATH
+          mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
+          cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
-    - tree /tmp/cache/$TESTREPORTSPATH
-    # find test files to run in this job using shipctl split_tests
+    - mkdir -p /tmp/reports
+    - |
+        if [ -d \"$TESTREPORTSPATH\" ];
+        then
+          cp -r $TESTREPORTSPATH/. /tmp/reports
+          rm -rf $TESTREPORTSPATH
+        fi
     - test_files=$(shipctl split_tests $TESTPATH \*_test.rb /tmp/cache/$TESTREPORTSPATH)
-    # run tests
+    - mkdir -p $TESTREPORTSPATH
     - bundle exec ruby -I.:test -e "ARGV.each{|f| require f}" ${test_files[@]}
-    # cache test reports
-    - cp -ru $TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/
-     
+    - cp -ru /tmp/reports/. $TESTREPORTSPATH"
+    - mkdir -p /tmp/cache/$TESTREPORTSPATH\ncp -r $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH/. /tmp/cache/$TESTREPORTSPATH/\n
+
     # print data to verify split_tests command
     - tree $TESTREPORTSPATH
     - tree /tmp/cache/$TESTREPORTSPATH
