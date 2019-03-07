@@ -42,6 +42,10 @@ build:
     - printf '%s\n' "${test_files[@]}"
     - printf '%s\n' "${all_tests[@]}"
     - printf '%s\n' "${past_tests[@]}"
+    - cat /tmp/current_tests.txt
+    - cat /tmp/past_test_timings.txt
+    - cat /tmp/sorted_past_test_timings.txt
+    - cat /tmp/sorted_past_tests.txt
 
   cache: true
   cache_dir_list:
