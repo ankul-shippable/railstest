@@ -19,10 +19,11 @@ build:
     - pip install yq
     - gem install bundler
     - bundle install
+    - tree /tmp/cache/$TESTREPORTSPATH || true
+    - mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
     - |
         if [ -d /tmp/cache/$TESTREPORTSPATH ];
         then
-          mkdir -p $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
           cp -r /tmp/cache/$TESTREPORTSPATH/. $SHIPPABLE_BUILD_DIR/$TESTREPORTSPATH
         fi
     - mkdir -p /tmp/reports
